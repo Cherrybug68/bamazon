@@ -42,15 +42,29 @@ var Table = require("cli-table");
 var ourTable = new Table();
 
 function displayResults(results){
-   //console.log(results);
    var ourTable = new Table({
-       head: ['Item ID', 'Product Name', 'Price (USD)', 'Department', 'Stock Quantity'],
-       colAligns: ['left', 'left', 'right', 'left', 'right']
+       head: ['Item ID', 'Product Name', 'Price (USD)', 'Department'],
+       colAligns: ['left', 'left', 'right', 'left']
    });
    for(var i = 0; i < results.length; i++){
        var record = results[i];
       // console.log(JSON.parse(JSON.stringify(record)));
-       ourTable.push([record.item_id, record.product_name, record.price.toFixed(2), record.department_name, record.stock_quantity]);
+       ourTable.push([record.item_id, record.product_name, record.price.toFixed(2), record.department_name]);
+   }
+   console.log(ourTable.toString());
+};
+
+
+// Puts Customer's purchases into a pretty table
+function displayPurchases(results, quantityOrdered, cost){
+   var ourTable = new Table({
+       head: ['Item ID', 'Product Name', 'Price (USD)', 'Quantity', 'Cost'],
+       colAligns: ['left', 'left', 'right', 'right', 'right']
+   });
+   for(var i = 0; i < results.length; i++){
+       var record = results[i];
+      // console.log(JSON.parse(JSON.stringify(record)));
+       ourTable.push([record.item_id, record.product_name, record.price.toFixed(2), quantityOrdered, cost.toFixed(2)]);
    }
    console.log(ourTable.toString());
 };
@@ -71,6 +85,9 @@ function promptCustomer(){
 
         // Get quantity to be purchased
         {
+            when: function (response) {
+                        return response.itemToPurchase.toUpperCase() != 'Q';
+                    },
             type: "input",
             message: "How many woud you like?",
             name: "quantityToPurchase"
@@ -112,23 +129,22 @@ function processOrder(answers){
             return;
         }
 
-        // Displays what they purchased
-        displayResults(res);
-
         var cost = quantityOrdered * res[0].price;
 
-        console.log("Item(s) cost you $" + cost);
+        // Displays what they purchased
+        displayPurchases(res, quantityOrdered, cost);
+
+        // console.log("Item(s) cost you $" + cost);
 
         // Displays the total cost of their purchases
         totalPurchase += cost;
 
         var newQuantity = res[0].stock_quantity - quantityOrdered;
         var query = "UPDATE product SET stock_quantity = " + newQuantity + " WHERE item_id = '" + answers.itemToPurchase + "'";
-        connection.query(queryItem, function(err, res){
+        connection.query(query, function(err, res){
             if(err) {
                 throw err;
             }
-
             start();
         });
     });
