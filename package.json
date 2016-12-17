@@ -1,0 +1,26 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "An Amazon-like store front using a MySQL table",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cherrybug68/bamazon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cherrybug68/bamazon/issues"
+  },
+  "homepage": "https://github.com/Cherrybug68/bamazon#readme",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "easy-table": "^1.0.0",
+    "inquirer": "^2.0.0",
+    "mysql": "^2.12.0",
+    "prompt": "^1.0.0"
+  }
+}
